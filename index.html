@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Media Analytics Dashboard</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0c0c0c 0%,
+          #1a1a2e 25%,
+          #16213e 50%,
+          #0f3460 75%,
+          #533483 100%
+        );
+        min-height: 100vh;
+        color: #ffffff;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      /* Header */
+      .header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #667eea, #764ba2, #4ecdc4, #45b7d1);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 4s ease-in-out infinite;
+        margin-bottom: 10px;
+      }
+
+      @keyframes gradientMove {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      /* Definition and Buttons Section */
+      .definition-section {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 80px;
+        align-items: flex-start;
+        opacity: 1;
+        transition: all 0.6s ease;
+      }
+
+      .definition-section.hide {
+        opacity: 0;
+        transform: translateY(-30px);
+        pointer-events: none;
+      }
+
+      .definition-box {
+        flex: 2;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .definition-box h2 {
+        color: #4ecdc4;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .definition-box p {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #e0e0e0;
+      }
+
+      .buttons-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .main-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 18px 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .main-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .dashboard-button {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+        color: white;
+        padding: 18px 25px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(240, 147, 251, 0.3);
+      }
+
+      .dashboard-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(240, 147, 251, 0.4);
+      }
+
+      /* Benefits List */
+      .benefits-list {
+        margin-top: 30px;
+        display: none;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+      }
+
+      .benefits-list.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+        animation: slideDown 0.6s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .benefit-item {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        opacity: 0;
+        transform: translateX(-30px);
+        animation: slideInBenefit 0.6s ease forwards;
+        border-left: 4px solid #4ecdc4;
+      }
+
+      .benefit-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .benefit-item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .benefit-item:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .benefit-item:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+      .benefit-item:nth-child(5) {
+        animation-delay: 0.5s;
+      }
+      .benefit-item:nth-child(6) {
+        animation-delay: 0.6s;
+      }
+      .benefit-item:nth-child(7) {
+        animation-delay: 0.7s;
+      }
+
+      @keyframes slideInBenefit {
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .arrow {
+        color: #4ecdc4;
+        font-size: 1.3rem;
+        margin-right: 15px;
+        font-weight: bold;
+      }
+
+      /* Dashboard Section - Real Dashboard Look */
+      .dashboard-section {
+        display: none;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+      }
+
+      .dashboard-section.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+        animation: fadeInUp 0.6s ease;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .dashboard-container {
+        background: linear-gradient(145deg, #1e1e2e 0%, #2d2d44 100%);
+        border-radius: 20px;
+        padding: 30px;
+        border: 1px solid rgba(78, 205, 196, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .dashboard-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #4ecdc4);
+        border-radius: 20px 20px 0 0;
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dashboard-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .dashboard-title h2 {
+        color: #4ecdc4;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .dashboard-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: #00d4aa;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: #00d4aa;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #4ecdc4;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: #b8c2cc;
+      }
+
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .analytics-card {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.02) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 25px 20px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .analytics-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .analytics-card:hover::before {
+        opacity: 1;
+      }
+
+      .analytics-card:hover {
+        background: linear-gradient(
+          145deg,
+          rgba(102, 126, 234, 0.1) 0%,
+          rgba(118, 75, 162, 0.05) 100%
+        );
+        border-color: #4ecdc4;
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+      }
+
+      .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 10px;
+      }
+
+      .card-description {
+        font-size: 0.9rem;
+        color: #b8c2cc;
+        line-height: 1.4;
+      }
+      /* Container - Reduced Vertical Padding */
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 15px 20px; /* Reduced top/bottom padding */
+      }
+
+      /* Header - Smaller Font and Margin */
+      .header {
+        text-align: center;
+        margin-bottom: 30px; /* Reduced bottom margin */
+      }
+
+      .header h1 {
+        font-size: 2.5rem; /* Reduced font size */
+        background: linear-gradient(45deg, #667eea, #764ba2, #4ecdc4, #45b7d1);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 4s ease-in-out infinite;
+        margin-bottom: 5px; /* Reduced bottom margin */
+      }
+
+      /* Dashboard Container - Reduced Padding */
+      .dashboard-container {
+        background: linear-gradient(145deg, #1e1e2e 0%, #2d2d44 100%);
+        border-radius: 20px;
+        padding: 20px; /* Reduced overall padding */
+        border: 1px solid rgba(78, 205, 196, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Dashboard Header - Reduced Margin and Font Size */
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Reduced bottom margin */
+        padding-bottom: 15px; /* Reduced bottom padding */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dashboard-title h2 {
+        font-size: 1.8rem; /* Reduced font size */
+      }
+
+      /* Dashboard Stats - Reduced Padding and Font Size */
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 15px; /* Reduced padding */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 1.5rem; /* Reduced font size */
+        margin-bottom: 3px; /* Reduced bottom margin */
+      }
+
+      .stat-label {
+        font-size: 0.8rem; /* Reduced font size */
+      }
+
+      /* Analytics Grid - Reduced Card Padding and Font Size */
+      .analytics-card {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.02) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 15px 12px; /* Reduced padding */
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card-icon {
+        font-size: 2rem; /* Reduced icon size */
+        margin-bottom: 10px; /* Reduced bottom margin */
+      }
+
+      .card-title {
+        font-size: 1rem; /* Reduced font size */
+        margin-bottom: 5px; /* Reduced bottom margin */
+      }
+
+      .card-description {
+        font-size: 0.8rem; /* Reduced font size */
+      }
+      /* Container - Reduced Vertical Padding */
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 10px 20px; /* Reduced top/bottom padding */
+      }
+
+      /* Header - Smaller Font and Margin */
+      .header {
+        text-align: center;
+        margin-bottom: 20px; /* Reduced bottom margin */
+      }
+
+      .header h1 {
+        font-size: 2rem; /* Reduced font size */
+        background: linear-gradient(45deg, #667eea, #764ba2, #4ecdc4, #45b7d1);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 4s ease-in-out infinite;
+        margin-bottom: 0;
+      }
+
+      /* Dashboard Container - Reduced Padding */
+      .dashboard-container {
+        background: linear-gradient(145deg, #1e1e2e 0%, #2d2d44 100%);
+        border-radius: 20px;
+        padding: 15px; /* Reduced overall padding */
+        border: 1px solid rgba(78, 205, 196, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Dashboard Header - Reduced Margin and Font Size */
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px; /* Reduced bottom margin */
+        padding-bottom: 10px; /* Reduced bottom padding */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dashboard-title h2 {
+        font-size: 1.5rem; /* Reduced font size */
+      }
+
+      .dashboard-status {
+        font-size: 0.8rem; /* Reduced font size */
+      }
+
+      /* Dashboard Stats - Reduced Padding and Font Size */
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px; /* Smaller border radius */
+        padding: 10px; /* Reduced padding */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 1.2rem; /* Reduced font size */
+        margin-bottom: 2px; /* Reduced bottom margin */
+      }
+
+      .stat-label {
+        font-size: 0.7rem; /* Reduced font size */
+      }
+
+      ---
+### **Key Change: Analytics Grid**
+
+The most important change is to the **`.analytics-grid`** class. The `grid-template-columns` property has been changed to `repeat(3, 1fr)`. This forces the grid to always have exactly three equal-width columns, which will make the six analytics cards fall into two rows.
+
+```css
+.analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* Forces 3 columns */
+        gap: 15px; /* Reduced gap between cards */
+        margin-top: 20px; /* Reduced top margin */
+      }
+
+      /* Analytics Card - Reduced Padding and Font Size */
+      .analytics-card {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.02) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 10px; /* Reduced padding */
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card-icon {
+        font-size: 1.5rem; /* Reduced icon size */
+        margin-bottom: 8px; /* Reduced bottom margin */
+      }
+
+      .card-title {
+        font-size: 0.9rem; /* Reduced font size */
+        margin-bottom: 4px; /* Reduced bottom margin */
+      }
+
+      .card-description {
+        font-size: 0.75rem; /* Reduced font size */
+        line-height: 1.3; /* Adjusted line height */
+      }
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px; /* Adjust gap as needed */
+        margin-top: 20px;
+      }
+      /* Container - Reduced Vertical Padding */
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 15px 20px; /* Reduced top/bottom padding */
+      }
+
+      /* Header - Reduced Margin */
+      .header {
+        text-align: center;
+        margin-bottom: 25px; /* Reduced bottom margin */
+      }
+
+      /* Dashboard Container - Reduced Padding */
+      .dashboard-container {
+        background: linear-gradient(145deg, #1e1e2e 0%, #2d2d44 100%);
+        border-radius: 20px;
+        padding: 25px; /* Reduced overall padding */
+        border: 1px solid rgba(78, 205, 196, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Dashboard Header - Reduced Margin and Padding */
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Reduced bottom margin */
+        padding-bottom: 15px; /* Reduced bottom padding */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Dashboard Stats - Reduced Padding */
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 15px; /* Reduced padding */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+      }
+
+      /* Analytics Grid - Reduced Card Padding */
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px; /* Reduced gap */
+        margin-top: 25px; /* Reduced top margin */
+      }
+
+      .analytics-card {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.02) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 20px 15px; /* Reduced padding */
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      /* Quiz Bubble */
+      .quiz-bubble {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        cursor: pointer;
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        animation: bubbleFloat 3s ease-in-out infinite;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .quiz-bubble.show {
+        display: flex;
+      }
+
+      .quiz-bubble:hover {
+        transform: scale(1.1);
+      }
+
+      @keyframes bubbleFloat {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .quiz-bubble.blast {
+        animation: blast 0.8s ease-out forwards;
+      }
+
+      @keyframes blast {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(2);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(0);
+          opacity: 0;
+        }
+      }
+
+      /* Card Overlay */
+      .card-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .card-overlay.show {
+        display: flex;
+        opacity: 1;
+      }
+
+      .card-overlay.show .info-card {
+        transform: scale(1);
+      }
+
+      .info-card h3 {
+        color: #4ecdc4;
+        margin-bottom: 20px;
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+
+      /* Quiz Section */
+      .quiz-section {
+        display: none;
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 0.6s ease;
+        margin-top: 60px;
+      }
+
+      .quiz-section.show {
+        display: block;
+        opacity: 1;
+        transform: scale(1);
+        transition: all 0.6s ease; /* Use a smooth transition instead of a shake animation */
+      }
+
+      @keyframes quizAppear {
+        0% {
+          opacity: 0;
+          transform: scale(0.5) rotate(10deg);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(1.1) rotate(-5deg);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      .quiz-container {
+        background: linear-gradient(145deg, #1e1e2e 0%, #2d2d44 100%);
+        border-radius: 20px;
+        padding: 40px;
+        border: 1px solid rgba(78, 205, 196, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .quiz-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ff6b6b, #f093fb, #667eea);
+        border-radius: 20px 20px 0 0;
+      }
+
+      .quiz-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .quiz-header h2 {
+        color: #4ecdc4;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .quiz-progress {
+        background: rgba(255, 255, 255, 0.1);
+        height: 6px;
+        border-radius: 3px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        height: 100%;
+        width: 0%;
+        transition: width 0.8s ease;
+      }
+
+      .question-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: questionSlide 0.5s ease;
+      }
+
+      @keyframes questionSlide {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .question-number {
+        color: #4ecdc4;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: inline-block;
+        background: rgba(78, 205, 196, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+      }
+
+      .question-text {
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-weight: 500;
+      }
+
+      .options {
+        display: grid;
+        gap: 12px;
+      }
+
+      .option {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: left;
+        font-size: 1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .option::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(78, 205, 196, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .option.selected {
+        background: rgba(102, 126, 234, 0.3); /* Lighter transparent blue */
+        color: #ffffff;
+        font-weight: 600;
+        border-color: rgba(
+          78,
+          205,
+          196,
+          0.7
+        ); /* A solid, but semi-transparent border */
+        backdrop-filter: blur(
+          5px
+        ); /* Add a subtle blur effect for a glassy look */
+      }
+
+      .quiz-controls {
+        text-align: center;
+        margin-top: 25px;
+      }
+
+      .next-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .next-btn.enabled {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .next-btn:hover.enabled {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .score-display {
+        text-align: center;
+        padding: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        margin-top: 25px;
+        animation: scoreReveal 1s ease;
+      }
+
+      @keyframes scoreReveal {
+        0% {
+          transform: scale(0.8) rotateY(90deg);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) rotateY(0deg);
+          opacity: 1;
+        }
+      }
+
+      .score-display h3 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+      }
+
+      .score-display p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+      }
+
+      .restart-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .restart-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .definition-section {
+          flex-direction: column;
+          gap: 30px;
+        }
+
+        .analytics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .header h1 {
+          font-size: 2.2rem;
+        }
+
+        .dashboard-container,
+        .quiz-container {
+          padding: 25px 20px;
+        }
+
+        .info-card {
+          padding: 30px 25px;
+          margin: 20px;
+        }
+
+        .quiz-bubble {
+          bottom: 20px;
+          right: 20px;
+          width: 60px;
+          height: 60px;
+          font-size: 1.5rem;
+        }
+      }
+      .buttons-section button.active {
+        box-shadow: 0 0 10px rgba(78, 205, 196, 0.6);
+        transform: translateY(-2px);
+      }
+      /* Benefits List - Slide Down Animation */
+      .benefits-list {
+        margin-top: 30px;
+        opacity: 0;
+        transform: translateY(-30px); /* start slightly above */
+        transition: all 0.6s ease;
+        display: none; /* hide by default */
+      }
+
+      .benefits-list.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+        animation: slideDown 0.6s ease forwards;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .info-card {
+        background: linear-gradient(145deg, #1a1a2e 0%, #2d2d44 100%);
+        backdrop-filter: blur(15px);
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 500px;
+        width: 90%;
+        border: 1px solid rgba(255, 255, 255, 0.2); /* Thinner, subtle white border */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Softer, less intense shadow */
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+
+      .info-card h3 {
+        color: #4ecdc4; /* Keep the original accent color */
+        margin-bottom: 20px;
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 1.5rem; /* This won't affect the SVG, but keep it for reference */
+        font-weight: 600;
+        color: #e0e0e0;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        display: flex; /* Centers the SVG inside the span */
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📊 Social Media Analytics</h1>
+      </div>
+
+      <!-- Definition and Buttons Section -->
+      <div class="definition-section" id="definitionSection">
+        <div class="definition-box">
+          <h2>What is Social Media Analytics?</h2>
+          <p>
+            Social Media Analytics is the practice of gathering and analyzing
+            data from social media platforms to measure performance, understand
+            audience behavior, and make data-driven decisions. It involves
+            tracking metrics like engagement rates, reach, impressions, and
+            conversions to optimize social media strategies and improve ROI.
+          </p>
+        </div>
+
+        <div class="buttons-section">
+          <button class="main-button" onclick="switchTab('benefits')">
+            Benefits
+          </button>
+          <button class="dashboard-button" onclick="switchTab('dashboard')">
+            📈 Analytics Dashboard
+          </button>
+        </div>
+      </div>
+
+      <!-- Benefits List -->
+      <div class="benefits-list" id="benefitsList">
+        <div class="benefit-item">
+          <span class="arrow">→</span>
+          <span
+            ><strong>Performance Measurement:</strong> Track and measure the
+            success of your social media campaigns</span
+          >
+        </div>
+        <div class="benefit-item">
+          <span class="arrow">→</span>
+          <span
+            ><strong>Audience Insights:</strong> Understand your audience
+            demographics, preferences, and behavior patterns</span
+          >
+        </div>
+        <div class="benefit-item">
+          <span class="arrow">→</span>
+          <span
+            ><strong>Competitive Analysis:</strong> Monitor competitor
+            performance and identify market opportunities</span
+          >
+        </div>
+        <div class="benefit-item">
+          <span class="arrow">→</span>
+          <span
+            ><strong>ROI Optimization:</strong> Maximize return on investment by
+            identifying high-performing content</span
+          >
+        </div>
+        <div class="benefit-item">
+          <span class="arrow">→</span>
+          <span
+            ><strong>Real-time Monitoring:</strong> Stay updated with real-time
+            social media conversations and trends</span
+          >
+        </div>
+        <div class="benefit-item">
+          <span class="arrow">→</span>
+          <span
+            ><strong>Strategic Planning:</strong> Make data-driven decisions for
+            future social media strategies</span
+          >
+        </div>
+        <div class="benefit-item">
+          <span class="arrow">→</span>
+          <span
+            ><strong>Crisis Management:</strong> Quickly identify and respond to
+            potential PR issues or negative sentiment</span
+          >
+        </div>
+      </div>
+
+      <!-- Dashboard Section -->
+      <div class="dashboard-section" id="dashboardSection">
+        <div class="dashboard-container">
+          <div class="dashboard-header">
+            <div class="dashboard-title">
+              <span>📈</span>
+              <h2>Social Media Analytics Dashboard</h2>
+            </div>
+            <div class="dashboard-status">
+              <div class="status-dot"></div>
+              <span>Live Data</span>
+            </div>
+          </div>
+
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <div class="stat-number">2.4M</div>
+              <div class="stat-label">Total Reach</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">145K</div>
+              <div class="stat-label">Engagements</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">8.2%</div>
+              <div class="stat-label">Engagement Rate</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">$12.5K</div>
+              <div class="stat-label">Ad Spend</div>
+            </div>
+          </div>
+
+          <div class="analytics-grid">
+            <div class="analytics-card" onclick="showCard('performance')">
+              <span class="card-icon">📊</span>
+              <div class="card-title">Performance Analytics</div>
+              <div class="card-description">
+                Track engagement rates, reach, impressions, and conversion
+                metrics
+              </div>
+            </div>
+            <div class="analytics-card" onclick="showCard('audience')">
+              <span class="card-icon">👥</span>
+              <div class="card-title">Audience Analytics</div>
+              <div class="card-description">
+                Analyze demographics, behavior patterns, and audience insights
+              </div>
+            </div>
+            <div class="analytics-card" onclick="showCard('competitor')">
+              <span class="card-icon">🏆</span>
+              <div class="card-title">Competitor Analytics</div>
+              <div class="card-description">
+                Monitor competitor performance and market opportunities
+              </div>
+            </div>
+            <div class="analytics-card" onclick="showCard('paid')">
+              <span class="card-icon">💰</span>
+              <div class="card-title">Paid Social Media Analytics</div>
+              <div class="card-description">
+                Measure ROI, CPC, CPA, and advertising campaign effectiveness
+              </div>
+            </div>
+            <div class="analytics-card" onclick="showCard('influencer')">
+              <span class="card-icon">⭐</span>
+              <div class="card-title">Influencer Analytics</div>
+              <div class="card-description">
+                Evaluate influencer partnerships and campaign performance
+              </div>
+            </div>
+            <div class="analytics-card" onclick="showCard('sentiment')">
+              <span class="card-icon">💭</span>
+              <div class="card-title">Sentiment Analytics</div>
+              <div class="card-description">
+                Analyze emotional tone and brand perception in mentions
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Section -->
+      <div class="quiz-section" id="quizSection">
+        <div class="quiz-container">
+          <div class="quiz-header">
+            <h2>🧠 Knowledge Assessment Quiz</h2>
+            <p>Test your understanding with 15 comprehensive questions</p>
+            <div class="quiz-progress">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div id="quizContent">
+            <div class="question-card" id="questionCard" style="display: none">
+              <div class="question-number" id="questionNumber"></div>
+              <div class="question-text" id="questionText"></div>
+              <div class="options" id="optionsContainer"></div>
+            </div>
+            <div class="quiz-controls">
+              <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+                Next Question
+              </button>
+            </div>
+          </div>
+
+          <div class="score-display" id="scoreDisplay" style="display: none">
+            <h3 id="finalScore"></h3>
+            <p id="scoreMessage"></p>
+            <button class="restart-btn" onclick="restartQuiz()">
+              Take Quiz Again
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz Bubble -->
+    <div class="quiz-bubble" id="quizBubble" onclick="blastQuiz()">🧠</div>
+
+    <!-- Card Overlay -->
+    <div class="card-overlay" id="cardOverlay">
+      <div class="info-card" id="infoCard">
+        <h3 id="cardTitle"></h3>
+        <p id="cardContent"></p>
+        <span class="close-btn" onclick="closeCard()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </div>
+    </div>
+
+    <script>
+      let currentQuestion = 0;
+      let score = 0;
+      let selectedAnswer = null;
+      let cardsViewed = new Set();
+      const totalCards = 6;
+
+      const cardData = {
+        performance: {
+          title: "📊 Performance Analytics",
+          content:
+            "Performance Analytics focuses on measuring the effectiveness of your social media content and campaigns. It includes metrics like engagement rate, reach, impressions, clicks, shares, comments, and conversions. This data helps you understand which content resonates with your audience and drives the best results, allowing you to optimize your content strategy for maximum impact and ROI.",
+        },
+        audience: {
+          title: "👥 Audience Analytics",
+          content:
+            "Audience Analytics provides deep insights into your followers and engaged users. It reveals demographic information (age, gender, location), behavioral patterns, interests, optimal posting times, and content preferences. Understanding your audience helps you create more targeted content, choose the right platforms, and develop messaging that resonates with your specific community for better engagement.",
+        },
+        competitor: {
+          title: "🏆 Competitor Analytics",
+          content:
+            "Competitor Analytics involves monitoring and analyzing your competitors' social media performance and strategies. Track their content strategy, engagement rates, follower growth, posting frequency, and campaign effectiveness. This intelligence helps you identify market gaps, benchmark your performance, discover content opportunities, and stay ahead of industry trends to maintain competitive advantage.",
+        },
+        paid: {
+          title: "💰 Paid Social Media Analytics",
+          content:
+            "Paid Social Media Analytics focuses on measuring the ROI and effectiveness of your paid advertising campaigns across social platforms. It includes critical metrics like cost per click (CPC), cost per acquisition (CPA), ad reach, conversion rates, click-through rates, and ROAS (Return on Ad Spend). This data is crucial for optimizing ad budgets, improving targeting, and maximizing campaign performance.",
+        },
+        influencer: {
+          title: "⭐ Influencer Analytics",
+          content:
+            "Influencer Analytics helps evaluate and measure influencer marketing campaigns and partnerships. It tracks metrics like influencer reach, engagement rates, audience quality, demographic alignment, campaign performance, brand mention sentiment, and conversion attribution. This analysis ensures you partner with the right influencers, measure authentic engagement, and calculate the true impact of influencer collaborations on your brand.",
+        },
+        sentiment: {
+          title: "💭 Sentiment Analytics",
+          content:
+            "Sentiment Analytics uses advanced natural language processing and machine learning to analyze the emotional tone of social media mentions about your brand. It categorizes mentions as positive, negative, or neutral, while identifying specific emotions, context, and trending topics. This helps you understand public perception, identify potential PR issues early, track campaign reception, and measure overall brand health over time.",
+        },
+      };
+
+      const quizQuestions = [
+        {
+          question: "What is the primary purpose of Social Media Analytics?",
+          options: [
+            "To automatically increase follower count",
+            "To measure performance and make data-driven decisions",
+            "To create content faster than competitors",
+            "To reduce overall marketing expenses",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which metric is most crucial for measuring genuine content engagement?",
+          options: [
+            "Total follower count across platforms",
+            "Daily impression count only",
+            "Engagement rate percentage",
+            "Number of posts per week",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "What does ROI stand for in social media marketing context?",
+          options: [
+            "Rate of Interest in campaigns",
+            "Return on Investment",
+            "Reach of Influence across platforms",
+            "Relevance of Information shared",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which analytics type provides insights into follower demographics and behavior?",
+          options: [
+            "Performance Analytics",
+            "Competitor Analytics",
+            "Audience Analytics",
+            "Sentiment Analytics",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "In paid social media advertising, what does CPC specifically measure?",
+          options: [
+            "Cost Per Customer acquisition",
+            "Clicks Per Campaign launched",
+            "Cost Per Click on advertisements",
+            "Campaign Performance Coefficient",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "Sentiment Analytics primarily uses which technology to analyze mentions?",
+          options: [
+            "Basic keyword counting algorithms",
+            "Natural Language Processing and ML",
+            "Simple image recognition software",
+            "Automated scheduling tools",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which metric best indicates the total number of unique users who saw your content?",
+          options: [
+            "Total engagement count",
+            "Click-through rate",
+            "Reach metric",
+            "Conversion rate",
+          ],
+          correct: 2,
+        },
+        {
+          question: "What does ROAS measure in paid social media campaigns?",
+          options: [
+            "Reach of Advertising Strategy implementation",
+            "Rate of Active Subscribers gained",
+            "Return on Ad Spend invested",
+            "Relevance of Ad Segments targeted",
+          ],
+          correct: 2,
+        },
+        {
+          question: "Competitor Analytics is most strategically useful for:",
+          options: [
+            "Directly copying competitor content",
+            "Benchmarking performance and identifying opportunities",
+            "Reducing your own content creation efforts",
+            "Automatically improving your metrics",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Real-time social media monitoring is most beneficial for:",
+          options: [
+            "Automating all social media posting",
+            "Crisis management and trend identification",
+            "Automatically increasing engagement rates",
+            "Reducing advertising spend requirements",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which factor is most important when evaluating influencer partnerships?",
+          options: [
+            "Follower count alone",
+            "Engagement rate and audience alignment",
+            "Number of posts published daily",
+            "Platform diversity only",
+          ],
+          correct: 1,
+        },
+        {
+          question: "What is the primary goal of audience analytics?",
+          options: [
+            "To increase posting frequency automatically",
+            "To understand follower demographics and behavior patterns",
+            "To reduce content creation time",
+            "To improve social platform algorithms",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Which KPI is most important for measuring content virality potential?",
+          options: [
+            "Share rate and amplification metrics",
+            "Comment count exclusively",
+            "Follower growth rate only",
+            "Post publishing frequency",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Advanced sentiment analysis can help predict:",
+          options: [
+            "Exact follower numbers for next month",
+            "Viral trends and emotional brand associations",
+            "Optimal posting times exclusively",
+            "Competitor posting schedules exactly",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "The most comprehensive approach to social media analytics involves:",
+          options: [
+            "Focusing exclusively on one platform",
+            "Tracking vanity metrics only",
+            "Integrating multiple analytics types for holistic insights",
+            "Automating all decisions without human oversight",
+          ],
+          correct: 2,
+        },
+      ];
+
+      function switchTab(tab) {
+        const benefitsList = document.getElementById("benefitsList");
+        const dashboardSection = document.getElementById("dashboardSection");
+
+        // Hide all content initially
+        benefitsList.classList.remove("show");
+        dashboardSection.classList.remove("show");
+
+        if (tab === "benefits") {
+          benefitsList.classList.add("show");
+        } else if (tab === "dashboard") {
+          dashboardSection.classList.add("show");
+        }
+
+        // Toggle active button style
+        document
+          .querySelectorAll(".buttons-section button")
+          .forEach((btn) => btn.classList.remove("active"));
+        if (tab === "benefits") {
+          document.querySelector(".main-button").classList.add("active");
+        } else {
+          document.querySelector(".dashboard-button").classList.add("active");
+        }
+
+        // Scroll smoothly to the target section
+        const targetElement =
+          tab === "benefits" ? benefitsList : dashboardSection;
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      function showCard(type) {
+        const overlay = document.getElementById("cardOverlay");
+        const title = document.getElementById("cardTitle");
+        const content = document.getElementById("cardContent");
+
+        title.textContent = cardData[type].title;
+        content.textContent = cardData[type].content;
+
+        overlay.classList.add("show");
+
+        // Add the card type to our set of viewed cards
+        cardsViewed.add(type);
+
+        // Check if all cards have been viewed
+        checkQuizBubble();
+      }
+
+      function checkQuizBubble() {
+        // Show the quiz bubble only after all 6 cards have been viewed.
+        if (cardsViewed.size === totalCards) {
+          const quizBubble = document.getElementById("quizBubble");
+          quizBubble.style.display = "flex"; // Make sure the bubble is visible
+          quizBubble.classList.add("show");
+        }
+      }
+
+      // Note: The blastQuiz() function is no longer called directly from HTML.
+      // The event listener below handles the click.
+      document.getElementById("quizBubble").addEventListener("click", () => {
+        const bubble = document.getElementById("quizBubble");
+        bubble.classList.remove("show");
+        bubble.style.opacity = "0";
+
+        setTimeout(() => {
+          bubble.style.display = "none";
+          const quizSection = document.getElementById("quizSection");
+          quizSection.style.display = "block";
+          quizSection.classList.add("show");
+          quizSection.scrollIntoView({ behavior: "smooth" });
+          startQuiz();
+        }, 300);
+      });
+
+      function closeCard() {
+        const overlay = document.getElementById("cardOverlay");
+        overlay.classList.remove("show");
+      }
+
+      function startQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        selectedAnswer = null;
+
+        document.getElementById("questionCard").style.display = "block";
+        document.getElementById("scoreDisplay").style.display = "none";
+        document.getElementById("nextBtn").textContent = "Next Question";
+
+        updateProgress();
+        showQuestion();
+      }
+
+      function updateProgress() {
+        const progress = (currentQuestion / quizQuestions.length) * 100;
+        document.getElementById("progressFill").style.width = progress + "%";
+      }
+
+      function showQuestion() {
+        const question = quizQuestions[currentQuestion];
+
+        document.getElementById("questionNumber").textContent = `Question ${
+          currentQuestion + 1
+        } of ${quizQuestions.length}`;
+        document.getElementById("questionText").textContent = question.question;
+
+        const optionsContainer = document.getElementById("optionsContainer");
+        optionsContainer.innerHTML = "";
+
+        question.options.forEach((option, index) => {
+          const optionBtn = document.createElement("button");
+          optionBtn.className = "option";
+          optionBtn.textContent = option;
+          optionBtn.onclick = () => selectOption(index, optionBtn);
+
+          optionBtn.style.opacity = "0";
+          optionBtn.style.transform = "translateX(-20px)";
+          setTimeout(() => {
+            optionBtn.style.transition = "all 0.3s ease";
+            optionBtn.style.opacity = "1";
+            optionBtn.style.transform = "translateX(0)";
+          }, index * 100);
+
+          optionsContainer.appendChild(optionBtn);
+        });
+
+        const nextBtn = document.getElementById("nextBtn");
+        nextBtn.classList.remove("enabled");
+        selectedAnswer = null;
+        updateProgress();
+      }
+
+      function selectOption(index, element) {
+        document.querySelectorAll(".option").forEach((opt) => {
+          opt.classList.remove("selected");
+          opt.style.transform = "translateX(0)";
+        });
+
+        element.classList.add("selected");
+        selectedAnswer = index;
+
+        const nextBtn = document.getElementById("nextBtn");
+        nextBtn.classList.add("enabled");
+      }
+
+      function nextQuestion() {
+        if (selectedAnswer === null) return;
+
+        if (selectedAnswer === quizQuestions[currentQuestion].correct) {
+          score++;
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < quizQuestions.length) {
+          const questionCard = document.getElementById("questionCard");
+          questionCard.style.transform = "translateX(-20px)";
+          questionCard.style.opacity = "0.5";
+
+          setTimeout(() => {
+            showQuestion();
+            questionCard.style.transform = "translateX(0)";
+            questionCard.style.opacity = "1";
+          }, 200);
+        } else {
+          showResults();
+        }
+      }
+
+      function showResults() {
+        document.getElementById("questionCard").style.display = "none";
+        document.getElementById("scoreDisplay").style.display = "block";
+
+        const percentage = Math.round((score / quizQuestions.length) * 100);
+        document.getElementById(
+          "finalScore"
+        ).textContent = `🎯 Final Score: ${score}/${quizQuestions.length} (${percentage}%)`;
+
+        let message = "";
+        let emoji = "";
+        if (percentage >= 90) {
+          message = "Outstanding! You are a Social Media Analytics expert!";
+          emoji = "🏆";
+        } else if (percentage >= 80) {
+          message = "Excellent work! You have mastered most concepts!";
+          emoji = "⭐";
+        } else if (percentage >= 70) {
+          message = "Great job! You have a solid understanding!";
+          emoji = "👍";
+        } else if (percentage >= 60) {
+          message = "Good effort! Review some concepts and try again!";
+          emoji = "📚";
+        } else {
+          message = "Keep learning! Practice makes perfect!";
+          emoji = "💪";
+        }
+
+        document.getElementById(
+          "scoreMessage"
+        ).textContent = `${emoji} ${message}`;
+        document.getElementById("progressFill").style.width = "100%";
+      }
+
+      function restartQuiz() {
+        const scoreDisplay = document.getElementById("scoreDisplay");
+        scoreDisplay.style.transform = "scale(0.95)";
+        setTimeout(() => {
+          scoreDisplay.style.transform = "scale(1)";
+          startQuiz();
+        }, 200);
+      }
+
+      document
+        .getElementById("cardOverlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeCard();
+          }
+        });
+
+      document.addEventListener("keydown", function (e) {
+        if (
+          e.key === "Enter" &&
+          document.getElementById("nextBtn").classList.contains("enabled")
+        ) {
+          nextQuestion();
+        } else if (
+          e.key === "Escape" &&
+          document.getElementById("cardOverlay").classList.contains("show")
+        ) {
+          closeCard();
+        }
+      });
+
+      document.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", function (e) {
+          const ripple = document.createElement("span");
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+
+          ripple.style.width = ripple.style.height = size + "px";
+          ripple.style.left = x + "px";
+          ripple.style.top = y + "px";
+          ripple.style.position = "absolute";
+          ripple.style.borderRadius = "50%";
+          ripple.style.background = "rgba(255, 255, 255, 0.3)";
+          ripple.style.pointerEvents = "none";
+          ripple.style.animation = "ripple 0.6s ease-out";
+
+          this.appendChild(ripple);
+
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
+      });
+
+      const style = document.createElement("style");
+      style.textContent = `
+    @keyframes ripple {
+        0% {
+            transform: scale(0);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0;
+        }
+    }
+    
+    button {
+        position: relative;
+        overflow: hidden;
+    }
+  `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>
