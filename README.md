@@ -1,4 +1,4 @@
-# Social Media Analytics Dashboard 📈
+# Social Media Analytics📈
 
 An AI-augmented analytics platform designed to bridge the gap between complex data and actionable marketing insights. 
 
